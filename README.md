@@ -4,7 +4,7 @@
 O Sistema de Gerenciamento de Eventos Happen é uma aplicação projetada para facilitar o gerenciamento de eventos, permitindo que usuários se cadastrem, participem de eventos, enviem feedback e organizadores criem e administrem suas próprias iniciativas. Agora adaptado para utilizar React Native no frontend, Node.js com TypeScript no backend, e MySQL como banco de dados.
 
 ## Tecnologias Utilizadas
-- **Frontend**: React Native.
+- **Frontend**: React Native .
 - **Backend**: Node.js com TypeScript.
 - **Banco de Dados**: MySQL, utilizando Sequelize como ORM.
 - **Gerenciamento de Pacotes**: npm.
