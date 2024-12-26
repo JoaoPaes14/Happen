@@ -1,0 +1,65 @@
+# Arquivos de dependências
+node_modules/
+pnpm-lock.yaml
+yarn.lock
+package-lock.json
+
+# Expo
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# Arquivos nativos
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro bundler
+.metro-health-check*
+
+# Arquivos de depuração
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# macOS
+.DS_Store
+
+# Certificados e chaves
+*.pem
+*.crt
+*.csr
+
+# Arquivos de ambiente local
+.env
+.env*.local
+.env.development
+.env.production
+.env.test
+
+# Arquivos TypeScript
+*.tsbuildinfo
+*.d.ts
+
+# IDEs e editores
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs e arquivos temporários
+*.log
+tmp/
+temp/
+*.tmp
+*.bak
+*.backup
+*.old
+
+# Outras configurações do sistema
+Thumbs.db
+desktop.ini
