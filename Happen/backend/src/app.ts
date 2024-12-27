@@ -1,12 +1,12 @@
 import express from 'express';
-import cors from 'cors';
+import corsConfig from './config/cors';
 import envConfig from './config/dotenv'; 
 
 const app = express();
 
 
 app.use(express.json());  
-app.use(cors());          
+app.use(corsConfig);       
 
 
 app.get('/', (req, res) => {
