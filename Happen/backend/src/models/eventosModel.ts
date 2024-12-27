@@ -1,7 +1,6 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/database';
 
-
 class Evento extends Model {
     public id!: number;
     public nome!: string;
@@ -40,27 +39,26 @@ Evento.init(
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        criado_em: { 
+        criado_em: {
             type: DataTypes.DATE,
             allowNull: false,
-            defaultValue: () => new Date(), 
-          },
-        atualizado_em: { 
-            type: DataTypes.DATE, 
+            defaultValue: DataTypes.NOW, 
+        },
+        atualizado_em: {
+            type: DataTypes.DATE,
             allowNull: false,
-            defaultValue: () => new Date(), 
-          },
+            defaultValue: DataTypes.NOW, 
+        },
     },
     {
         sequelize,
-        tableName: 'Eventos',  
-        timestamps: false, 
+        tableName: 'Eventos',
+        timestamps: false,
         hooks: {
-            beforeUpdate: (usuario: any) => {
-      
-              usuario.atualizado_em = new Date();
-            }
-          }    
+            beforeUpdate: (evento: any) => {
+                evento.atualizado_em = new Date(); 
+            },
+        },
     }
 );
 
