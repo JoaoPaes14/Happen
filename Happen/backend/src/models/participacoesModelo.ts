@@ -1,64 +1,55 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/database';
 
-class Feedback extends Model {
+class Participacao extends Model {
     public id!: number;
-    public id_evento!: number;
     public id_usuario!: number;
-    public nota!: number;
-    public comentario!: string;
+    public id_evento!: number;
+    public status!: 'confirmado' | 'pendente' | 'cancelado';
     public criado_em!: Date;
-    public atualizado_em!: Date;  // Adicionando o campo 'atualizado_em'
+    public atualizado_em!: Date;
 }
 
-Feedback.init(
+Participacao.init(
     {
         id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
         },
-        id_evento: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-        },
         id_usuario: {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        nota: {
+        id_evento: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            validate: {
-                min: 1,
-                max: 5,
-            },
         },
-        comentario: {
-            type: DataTypes.TEXT,
-            allowNull: true,
+        status: {
+            type: DataTypes.ENUM('confirmado', 'pendente', 'cancelado'),
+            defaultValue: 'pendente',
         },
         criado_em: { 
             type: DataTypes.DATE,
             allowNull: false,
             defaultValue: DataTypes.NOW,  
         },
-        atualizado_em: {  
-            type: DataTypes.DATE,
+        atualizado_em: { 
+            type: DataTypes.DATE, 
             allowNull: false,
-            defaultValue: DataTypes.NOW,
+            defaultValue: DataTypes.NOW,  
         },
     },
     {
         sequelize,
-        tableName: 'Feedback',  
+        tableName: 'Participacoes',  
         timestamps: false, 
         hooks: {
-            beforeUpdate: (feedback: any) => {
-                feedback.atualizado_em = new Date();  
+            beforeUpdate: (participacao: any) => {
+                participacao.atualizado_em = new Date();  
             }
         }
     }
 );
 
-export default Feedback;
+export default Participacao;
