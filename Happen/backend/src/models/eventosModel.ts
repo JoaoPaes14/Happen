@@ -1,7 +1,7 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/database';
 
-// Definição do modelo de Evento
+
 class Evento extends Model {
     public id!: number;
     public nome!: string;
@@ -45,7 +45,7 @@ Evento.init(
             allowNull: false,
             defaultValue: () => new Date(), 
           },
-          atualizado_em: { 
+        atualizado_em: { 
             type: DataTypes.DATE, 
             allowNull: false,
             defaultValue: () => new Date(), 
