@@ -8,7 +8,7 @@ class Feedback extends Model {
     public nota!: number;
     public comentario!: string;
     public criado_em!: Date;
-    public atualizado_em!: Date;  // Adicionando o campo 'atualizado_em'
+    public atualizado_em!: Date;  
 }
 
 Feedback.init(
