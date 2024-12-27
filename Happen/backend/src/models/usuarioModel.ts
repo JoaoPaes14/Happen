@@ -43,12 +43,12 @@ Usuario.init(
     criado_em: { 
       type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: () => new Date(), 
+      defaultValue: DataTypes.NOW,   
     },
     atualizado_em: { 
       type: DataTypes.DATE, 
       allowNull: false,
-      defaultValue: () => new Date(), 
+      defaultValue: DataTypes.NOW,  
     },
   },
   {
