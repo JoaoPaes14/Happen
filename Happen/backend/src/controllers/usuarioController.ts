@@ -80,3 +80,22 @@ export const loginUusuario= async(req:Request, res:Response):Promise<Response> =
         return res.status(500).json({message: 'Erro ao tentar fazer login',error});
     }
 };
+
+export const excluirUsuario = async(req :Request, res :Response):Promise<Response> =>{
+    const {id}= req.params;
+
+    try{
+        const usuario= await Usuario.findByPk(id);
+
+        if(!usuario){
+            return res.status(404).json({message:'Uusário não encontrado'});
+        }
+
+        await usuario.destroy();
+
+        return res.status(200).json({message :'Usuário excluído com sucesso'});
+
+    }catch(error){
+        return res.status(500).json({message :' Erro ao excluir o usuário',error});
+    }
+};
