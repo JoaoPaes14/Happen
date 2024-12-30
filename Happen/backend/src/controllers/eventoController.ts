@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Evento from '../models/eventosModel';
+import { Op } from 'sequelize';
 
 
 export const criarEvento = async (req: Request, res: Response): Promise<void> => {
@@ -39,5 +40,42 @@ export const obterEvento = async (req: Request, res: Response): Promise<void> =>
         res.status(200).json(evento);
     }catch(error : any){
         res.status(500).json({message:'Erro ao obter evento',error:error.message});
+    }
+};
+
+
+
+
+export const listarEventos = async (req: Request, res: Response): Promise<void> => {
+    const { nome, data_inicial, data_final } = req.query;
+
+    try {
+        let filtros: any = {};
+
+     
+        if (nome) {
+            filtros.nome = { [Op.like]: `%${nome}%` };
+        }
+
+        if (data_inicial && data_final) {
+      
+            const dataInicial = Array.isArray(data_inicial) ? data_inicial[0] : data_inicial;
+            const dataFinal = Array.isArray(data_final) ? data_final[0] : data_final;
+
+           
+            if (typeof dataInicial === 'string' && typeof dataFinal === 'string') {
+                filtros.data_hora = { [Op.between]: [new Date(dataInicial), new Date(dataFinal)] };
+            }
+        }
+
+       
+        const eventos = await Evento.findAll({
+            where: filtros,
+            include: ['organizador'],
+        });
+
+        res.status(200).json({ eventos });
+    } catch (error: any) {
+        res.status(500).json({ message: 'Erro ao listar eventos', error: error.message });
     }
 };
