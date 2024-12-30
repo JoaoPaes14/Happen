@@ -1,22 +1,22 @@
 import { Request, Response } from 'express';
-import Usuario from '../models/usuarioModel'; 
-import bcrypt from 'bcryptjs'; 
+import Usuario from '../models/usuarioModel';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-export const criarUsuario = async(req: Request, res:Response):Promise<Response> =>{
-    const {nome,email,senha}= req.body;
+export const criarUsuario = async (req: Request, res: Response): Promise<void> => {
+    const { nome, email, senha } = req.body;
 
     try {
-       
         const usuarioExistente = await Usuario.findOne({ where: { email } });
 
         if (usuarioExistente) {
-            return res.status(400).json({ message: 'Email já registrado' });
+            res.status(400).json({ message: 'Email já registrado' });
+            return;
         }
-   
+
         const senhaHash = await bcrypt.hash(senha, 10);
 
         const novoUsuario = await Usuario.create({
@@ -25,77 +25,73 @@ export const criarUsuario = async(req: Request, res:Response):Promise<Response> 
             senha: senhaHash,
         });
 
-        return res.status(201).json({ message: 'Usuário criado com sucesso', usuario: novoUsuario });
+        res.status(201).json({ message: 'Usuário criado com sucesso', usuario: novoUsuario });
     } catch (error) {
-        return res.status(500).json({ message: 'Erro ao criar usuário', error });
+        res.status(500).json({ message: 'Erro ao criar usuário', error });
     }
 };
 
-export const obterUsuario = async (req: Request, res: Response): Promise<Response> => {
+export const obterUsuario = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
 
     try {
         const usuario = await Usuario.findByPk(id);
 
         if (!usuario) {
-            return res.status(404).json({ message: 'Usuário não encontrado' });
+            res.status(404).json({ message: 'Usuário não encontrado' });
+            return;
         }
 
-        return res.status(200).json(usuario);
+        res.status(200).json(usuario);
     } catch (error) {
-        return res.status(500).json({ message: 'Erro ao obter usuário', error });
+        res.status(500).json({ message: 'Erro ao obter usuário', error });
     }
 };
 
-export const loginUusuario= async(req:Request, res:Response):Promise<Response> =>{
-    const{email,senha}= req.body;
+export const loginUsuario = async (req: Request, res: Response): Promise<void> => {
+    const { email, senha } = req.body;
 
-    try{
+    try {
+        const usuario = await Usuario.findOne({ where: { email } });
 
-        const usuario = await Usuario.findOne({where:{email}});
-
-        if(!usuario){
-            return res.status(404).json({message:'Usuário não encotrado'});
-
+        if (!usuario) {
+            res.status(404).json({ message: 'Usuário não encontrado' });
+            return;
         }
 
         const senhaValida = await bcrypt.compare(senha, usuario.senha);
 
-        if(!senhaValida){
-
-            return res.status(401).json({message: 'Senha incorreta'});
+        if (!senhaValida) {
+            res.status(401).json({ message: 'Senha incorreta' });
+            return;
         }
 
         const token = jwt.sign(
-            {
-                id: usuario.id, email: usuario.email
-            },
+            { id: usuario.id, email: usuario.email },
             process.env.JWT_SECRET || 'bia',
-            {expiresIn: '1h'}
-
+            { expiresIn: '1h' }
         );
-        return res.status(200).json({token});
 
-    }catch(error){
-        return res.status(500).json({message: 'Erro ao tentar fazer login',error});
+        res.status(200).json({ token });
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao tentar fazer login', error });
     }
 };
 
-export const excluirUsuario = async(req :Request, res :Response):Promise<Response> =>{
-    const {id}= req.params;
+export const excluirUsuario = async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
 
-    try{
-        const usuario= await Usuario.findByPk(id);
+    try {
+        const usuario = await Usuario.findByPk(id);
 
-        if(!usuario){
-            return res.status(404).json({message:'Uusário não encontrado'});
+        if (!usuario) {
+            res.status(404).json({ message: 'Usuário não encontrado' });
+            return;
         }
 
         await usuario.destroy();
-
-        return res.status(200).json({message :'Usuário excluído com sucesso'});
-
-    }catch(error){
-        return res.status(500).json({message :' Erro ao excluir o usuário',error});
+        res.status(200).json({ message: 'Usuário excluído com sucesso' });
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao excluir o usuário', error });
     }
 };
