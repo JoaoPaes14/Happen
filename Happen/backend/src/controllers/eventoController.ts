@@ -19,9 +19,25 @@ export const criarEvento = async (req: Request, res: Response): Promise<void> =>
         });
         res.status(201).json({ message: 'Evento criado com sucesso', evento: novoEvento });
     } catch (error: any) {
-        res.status(500).json({message:'Erro ao criar evento',error: error.message});
+        res.status(500).json({ message: 'Erro ao criar evento', error: error.message });
 
 
     }
 
+};
+
+export const obterEvento = async (req: Request, res: Response): Promise<void> => {
+    const{id} = req.params;
+
+    try{
+        const evento = await Evento.findByPk(id);
+
+        if(!evento){
+            res.status(404).json({message :'Evento não encontrado'});
+            return;
+        }
+        res.status(200).json(evento);
+    }catch(error : any){
+        res.status(500).json({message:'Erro ao obter evento',error:error.message});
+    }
 };
