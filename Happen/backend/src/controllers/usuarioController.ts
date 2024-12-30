@@ -7,30 +7,53 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export const criarUsuario = async (req: Request, res: Response): Promise<void> => {
-    const { nome, email, senha } = req.body;
-
+    const { nome, email, senha, tipo } = req.body;
+  
     try {
-        const usuarioExistente = await Usuario.findOne({ where: { email } });
+     
+      if (!email.match(/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/)) {
+        res.status(400).json({ message: 'Formato de email inválido' });
+        return;
+      }
+  
+      if (senha.length < 6) {
+        res.status(400).json({ message: 'Senha deve ter pelo menos 6 caracteres' });
+        return;
+      }
+  
+      const usuarioExistente = await Usuario.findOne({ where: { email } });
+  
+      if (usuarioExistente) {
+        res.status(400).json({ message: 'Email já registrado' });
+        return;
+      }
+  
+      const senhaHash = await bcrypt.hash(senha, 10);
+  
+      const novoUsuario = await Usuario.create({
+        nome,
+        email,
+        senha: senhaHash,
+        tipo: tipo || 'comum', 
+      });
+  
 
-        if (usuarioExistente) {
-            res.status(400).json({ message: 'Email já registrado' });
-            return;
-        }
-
-        const senhaHash = await bcrypt.hash(senha, 10);
-
-        const novoUsuario = await Usuario.create({
-            nome,
-            email,
-            senha: senhaHash,
-        });
-
-        res.status(201).json({ message: 'Usuário criado com sucesso', usuario: novoUsuario });
-    } catch (error) {
-        res.status(500).json({ message: 'Erro ao criar usuário', error });
+      const token = jwt.sign(
+        { id: novoUsuario.id, email: novoUsuario.email },
+        process.env.JWT_SECRET || 'bia',
+        { expiresIn: '1h' }
+      );
+  
+      res.status(201).json({ message: 'Usuário criado com sucesso', usuario: novoUsuario, token });
+    } catch (error: any) {
+      if (error.name === 'SequelizeUniqueConstraintError') {
+        res.status(400).json({ message: 'Email já registrado' });
+      } else {
+        res.status(500).json({ message: 'Erro ao criar usuário', error: error.message });
+      }
     }
-};
-
+  };
+  
 export const obterUsuario = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
 

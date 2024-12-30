@@ -1,6 +1,7 @@
 import express from 'express';
 import corsConfig from './config/cors';
 import envConfig from './config/dotenv'; 
+import usuarioRoutes from './routes/usuarioRoutes'
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.get('/', (req, res) => {
   res.send('API está funcionando!');
 });
 
+app.use('/api', usuarioRoutes);
 
 const PORT = envConfig.PORT || 3000;
 
