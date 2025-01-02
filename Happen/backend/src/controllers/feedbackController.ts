@@ -1,6 +1,6 @@
 import { Request,Response } from "express";
 import Feedback from "../models/feedbackModel";
-import { json } from "body-parser";
+
 
 export const criarFeedback = async (req:Request, res:Response):Promise<void> =>{
     const{usuarioId,eventoId,comentario,nota}= req.body;
@@ -27,5 +27,22 @@ export const listarFeedback = async(req:Request, res:Response):Promise<void> =>{
     }catch(error){
         res.status(500).json({message:'Erro ao listar feedbacks',error});
 
+    }
+};
+
+export const obterFeedback = async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+
+    try {
+        const feedback = await Feedback.findByPk(id);
+
+        if (!feedback) {
+            res.status(404).json({ message: 'Feedback não encontrado' });
+            return;
+        }
+
+        res.status(200).json(feedback);
+    } catch (error) {
+        res.status(500).json({message: 'Erro ao obter feedback',error,});
     }
 };
