@@ -19,7 +19,7 @@ export const criarParticipacao = async (req:Request, res:Response):Promise<void>
     
 };
 
-export const listarParticipao = async(req: Request,res :Response):Promise<void> =>{
+export const listarParticipacao = async(req: Request,res :Response):Promise<void> =>{
     try{
         const participacao = await Participacao.findAll();
         res.status(200).json(participacao);
