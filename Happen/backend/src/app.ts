@@ -5,6 +5,7 @@ import usuarioRoutes from './routes/usuarioRoutes'
 import eventosRoutes from './routes/eventosRoutes'
 import feedbackRoutes from './routes/feedbackRoutes'
 import participacoesRoutes from './routes/participacoesRoutes'
+import notificacaoRoutes from './routes/notificacaoRoutes'
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/eventos', eventosRoutes);
 app.use('/api/feedback', feedbackRoutes)
 app.use('/api/participacoes', participacoesRoutes)
+app.use('/api/notificacao', notificacaoRoutes)
 
 const PORT = envConfig.PORT || 3000;
 
