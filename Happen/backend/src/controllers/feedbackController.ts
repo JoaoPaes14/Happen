@@ -46,3 +46,21 @@ export const obterFeedback = async (req: Request, res: Response): Promise<void> 
         res.status(500).json({message: 'Erro ao obter feedback',error,});
     }
 };
+
+export const excluirFeedback = async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+
+    try {
+        const feedback = await Feedback.findByPk(id);
+
+        if (!feedback) {
+            res.status(404).json({ message: 'Feedback não encontrado' });
+            return;
+        }
+
+        await feedback.destroy();
+        res.status(200).json({ message: 'Feedback excluído com sucesso' });
+    } catch (error) {
+        res.status(500).json({message: 'Erro ao excluir feedback',error, });
+    }
+};
