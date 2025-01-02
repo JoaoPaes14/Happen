@@ -18,3 +18,12 @@ export const criarParticipacao = async (req:Request, res:Response):Promise<void>
     }
     
 };
+
+export const listarParticipao = async(req: Request,res :Response):Promise<void> =>{
+    try{
+        const participacao = await Participacao.findAll();
+        res.status(200).json(participacao);
+    } catch (error) {
+        res.status(500).json({message: 'Erro ao listar participações.',error,});
+    }
+};
