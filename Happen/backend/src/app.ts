@@ -2,6 +2,7 @@ import express from 'express';
 import corsConfig from './config/cors';
 import envConfig from './config/dotenv'; 
 import usuarioRoutes from './routes/usuarioRoutes'
+import eventosRoutes from './routes/eventosRoutes'
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api', usuarioRoutes);
+app.use('/api/eventos', eventosRoutes);
 
 const PORT = envConfig.PORT || 3000;
 
