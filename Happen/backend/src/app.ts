@@ -4,6 +4,7 @@ import envConfig from './config/dotenv';
 import usuarioRoutes from './routes/usuarioRoutes'
 import eventosRoutes from './routes/eventosRoutes'
 import feedbackRoutes from './routes/feedbackRoutes'
+import participacoesRoutes from './routes/participacoesRoutes'
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.get('/', (req, res) => {
 app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/eventos', eventosRoutes);
 app.use('/api/feedback', feedbackRoutes)
+app.use('/api/participacoes', participacoesRoutes)
 
 const PORT = envConfig.PORT || 3000;
 
