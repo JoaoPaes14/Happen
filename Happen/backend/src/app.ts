@@ -3,6 +3,7 @@ import corsConfig from './config/cors';
 import envConfig from './config/dotenv'; 
 import usuarioRoutes from './routes/usuarioRoutes'
 import eventosRoutes from './routes/eventosRoutes'
+import feedbackRoutes from './routes/feedbackRoutes'
 
 const app = express();
 
@@ -15,8 +16,9 @@ app.get('/', (req, res) => {
   res.send('API está funcionando!');
 });
 
-app.use('/api', usuarioRoutes);
+app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/eventos', eventosRoutes);
+app.use('/api/feedback', feedbackRoutes)
 
 const PORT = envConfig.PORT || 3000;
 
