@@ -25,7 +25,7 @@ const LoadingScreen = ({ navigation }: any) => {
        
         const timer = setTimeout(() => {
             navigation.replace('Login');
-        }, 3000);
+        }, 6000);
 
         return () => clearTimeout(timer);
     }, [navigation]);

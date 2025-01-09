@@ -9,7 +9,7 @@ export const login = async (email: string, senha: string) => {
     const response = await axios.post(`${API_URL}/login`, { email, senha });
 
     if (response.data.token) {
-      
+
       await AsyncStorage.setItem('token', response.data.token);
     }
 
@@ -18,6 +18,22 @@ export const login = async (email: string, senha: string) => {
     throw new Error(error.response?.data?.message || 'Erro ao fazer login');
   }
 };
+
+export const register = async (nome: string, email: string, senha: string, tipo: string = 'comum') => {
+  try {
+    const response = await axios.post(`${API_URL}/usuarios`, { nome,email, senha, tipo });
+
+    if (response.data.token) {
+
+      await AsyncStorage.setItem('token', response.data.token);
+    }
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Erro ao criar usuario');
+  }
+
+};
+
 
 
 export const getToken = async () => {
