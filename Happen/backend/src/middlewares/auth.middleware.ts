@@ -4,7 +4,11 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-export const authMiddleware = (req: Request, res: Response, next: NextFunction): void => {
+interface CustomRequest extends Request {
+    user?: string | jwt.JwtPayload;
+}
+
+export const authMiddleware = (req: CustomRequest, res: Response, next: NextFunction): void => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {

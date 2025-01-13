@@ -6,53 +6,61 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-export const criarUsuario = async (req: Request, res: Response): Promise<void> => {
-    const { nome, email, senha, tipo } = req.body;
-  
-    try {
-     
-      if (!email.match(/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/)) {
-        res.status(400).json({ message: 'Formato de email inválido' });
-        return;
-      }
-  
-      if (senha.length < 6) {
-        res.status(400).json({ message: 'Senha deve ter pelo menos 6 caracteres' });
-        return;
-      }
-  
-      const usuarioExistente = await Usuario.findOne({ where: { email } });
-  
-      if (usuarioExistente) {
-        res.status(400).json({ message: 'Email já registrado' });
-        return;
-      }
-  
-      const senhaHash = await bcrypt.hash(senha, 10);
-  
-      const novoUsuario = await Usuario.create({
-        nome,
-        email,
-        senha: senhaHash,
-        tipo: tipo || 'comum', 
-      });
-  
 
-      const token = jwt.sign(
-        { id: novoUsuario.id, email: novoUsuario.email },
-        process.env.JWT_SECRET || 'bia',
-        { expiresIn: '1h' }
-      );
-  
-      res.status(201).json({ message: 'Usuário criado com sucesso', usuario: novoUsuario, token });
-    } catch (error: any) {
-      if (error.name === 'SequelizeUniqueConstraintError') {
-        res.status(400).json({ message: 'Email já registrado' });
-      } else {
-        res.status(500).json({ message: 'Erro ao criar usuário', error: error.message });
-      }
+
+export const criarUsuario = async (req: Request, res: Response): Promise<void> => {
+  const { nome, email, senha, tipo } = req.body;
+
+  if (!email || !senha) {
+    res.status(400).json({ message: 'Email e senha são obrigatórios' });
+    return;
+  }
+
+  try {
+    if (!email.match(/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/)) {
+      res.status(400).json({ message: 'Formato de email inválido' });
+      return;
     }
-  };
+
+    if (senha.length < 6) {
+      res.status(400).json({ message: 'Senha deve ter pelo menos 6 caracteres' });
+      return;
+    }
+
+    const usuarioExistente = await Usuario.findOne({ where: { email } });
+
+    if (usuarioExistente) {
+      res.status(400).json({ message: 'Email já registrado' });
+      return;
+    }
+
+    const senhaHash = await bcrypt.hash(senha, 10);
+
+    const novoUsuario = await Usuario.create({
+      nome,
+      email,
+      senha: senhaHash,
+      tipo: tipo || 'comum',
+    });
+
+    const token = jwt.sign(
+      { id: novoUsuario.id, email: novoUsuario.email },
+      process.env.JWT_SECRET || 'bia',
+      { expiresIn: '1h' }
+    );
+
+    res.status(201).json({ message: 'Usuário criado com sucesso', usuario: novoUsuario, token });
+  } catch (error: any) {
+    console.error('Erro:', error);  
+    if (error.name === 'SequelizeUniqueConstraintError') {
+      res.status(400).json({ message: 'Email já registrado' });
+    } else if (error instanceof Error) {
+      res.status(500).json({ message: 'Erro ao criar usuário', error: error.message });
+    } else {
+      res.status(500).json({ message: 'Erro ao criar usuário', error: 'Erro desconhecido' });
+    }
+  }
+};
   
 export const obterUsuario = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;

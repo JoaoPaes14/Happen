@@ -21,7 +21,7 @@ export const login = async (email: string, senha: string) => {
 
 export const register = async (nome: string, email: string, senha: string, tipo: string = 'comum') => {
   try {
-    const response = await axios.post(`${API_URL}/usuarios`, { nome,email, senha, tipo });
+    const response = await axios.post(`${API_URL}/criar`, { nome,email, senha, tipo });
 
     if (response.data.token) {
 
@@ -29,6 +29,7 @@ export const register = async (nome: string, email: string, senha: string, tipo:
     }
     return response.data;
   } catch (error: any) {
+    console.error('Erro ao criar usuário:', error.response?.data?.message || error.message)
     throw new Error(error.response?.data?.message || 'Erro ao criar usuario');
   }
 

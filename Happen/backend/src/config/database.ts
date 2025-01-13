@@ -1,19 +1,15 @@
-import { Sequelize } from 'sequelize';
-import envConfig from '../config/dotenv';
+import { Sequelize } from 'sequelize-typescript'; 
+import envConfig from '../config/dotenv';  
 
-
-const sequelize = new Sequelize(
-  envConfig.DB_NAME, 
-  envConfig.DB_USER, 
-  envConfig.DB_PASSWORD, 
-  {
-    host: envConfig.DB_HOST,
-    dialect: 'mysql',
-    port: parseInt(envConfig.DB_PORT, 10),
-    logging: true, 
-  }
-);
-
+const sequelize = new Sequelize({
+  database: envConfig.DB_NAME, 
+  username: envConfig.DB_USER, 
+  password: envConfig.DB_PASSWORD,
+  host: envConfig.DB_HOST,
+  dialect: 'mysql',
+  logging: true,  
+  models: [__dirname + '/models'],  
+});
 
 const testConnection = async () => {
   try {
@@ -26,4 +22,4 @@ const testConnection = async () => {
 
 testConnection();
 
-export default sequelize;
+export { sequelize, testConnection };

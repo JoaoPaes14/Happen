@@ -1,5 +1,6 @@
 import { Model, DataTypes } from 'sequelize';
-import sequelize from '../config/database';
+import { sequelize } from '../config/database';
+
 
 class Notificacao extends Model {
     public id!: number;

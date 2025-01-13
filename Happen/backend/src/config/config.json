@@ -1,0 +1,27 @@
+{
+    "development": {
+      "username": "root",
+      "password": "1234",
+      "database": "happen",
+      "host": "localhost",
+      "dialect": "mysql",
+      "port": 3000
+    },
+    "test": {
+      "username": "root",
+      "password": "1234",
+      "database": "happen_test",
+      "host": "localhost",
+      "dialect": "mysql",
+      "port": 3000
+    },
+    "production": {
+      "username": "root",
+      "password": "1234",
+      "database": "happen_prod",
+      "host": "localhost",
+      "dialect": "mysql",
+      "port": 3000
+    }
+  }
+  

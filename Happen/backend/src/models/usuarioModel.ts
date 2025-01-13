@@ -1,5 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
-import sequelize from '../config/database';
+import { sequelize } from '../config/database';  
 
 class Usuario extends Model {
   public id!: number;
@@ -40,28 +40,14 @@ Usuario.init(
       type: DataTypes.STRING(255), 
       allowNull: true 
     },
-    criado_em: { 
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,   
-    },
-    atualizado_em: { 
-      type: DataTypes.DATE, 
-      allowNull: false,
-      defaultValue: DataTypes.NOW,  
-    },
   },
   {
-    sequelize,
+    sequelize,  
     modelName: 'Usuario',
     tableName: 'Usuarios',
     timestamps: false, 
-    hooks: {
-      beforeUpdate: (usuario: any) => {
-
-        usuario.atualizado_em = new Date();
-      }
-    }
+    updatedAt: 'atualizado_em',
+    createdAt: 'criado_em', 
   }
 );
 
