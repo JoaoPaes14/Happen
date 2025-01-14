@@ -37,3 +37,24 @@ const getToken = async (): Promise<string | null> => {
 
     }
   };
+
+  
+  export const listarEventos = async (nome?: string, data_inicial?: string, data_final?: string) => {
+    try {
+      const token = await getToken();
+      const params: Record<string, string> = {};
+      if (nome) params.nome = nome;
+      if (data_inicial) params.data_inicial = data_inicial;
+      if (data_final) params.data_final = data_final;
+  
+      const response = await axios.get(`${API_URL}/listarEventos`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params,
+      });
+      return response.data.eventos;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Erro ao listar eventos');
+    }
+  };
