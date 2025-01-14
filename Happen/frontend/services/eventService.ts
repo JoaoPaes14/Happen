@@ -58,3 +58,18 @@ const getToken = async (): Promise<string | null> => {
       throw new Error(error.response?.data?.message || 'Erro ao listar eventos');
     }
   };
+
+export const excluirEvento= async(id:number)=>{
+    try{
+        const token= await getToken();
+        const response = await axios.delete(`${API_URL}/excluirEvento/${id}`,{
+            headers:{
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data
+    }catch(error:any){
+        throw new Error(error.response?.data?.message || 'Erro ao excluir evento');
+
+    }
+};
