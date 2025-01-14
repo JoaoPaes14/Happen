@@ -24,7 +24,7 @@ app.use('/api/feedback', feedbackRoutes)
 app.use('/api/participacoes', participacoesRoutes)
 app.use('/api/notificacao', notificacaoRoutes)
 
-const PORT = envConfig.PORT || 3000;
+const PORT = envConfig.PORT || 3001;
 
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);

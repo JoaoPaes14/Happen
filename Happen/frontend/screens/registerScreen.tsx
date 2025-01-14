@@ -37,7 +37,7 @@ const RegisterScreen = ({ navigation }: any) => {
       if (response.token) {
         await AsyncStorage.setItem('token', response.token);
         Alert.alert('Sucesso', 'Usuário registrado com sucesso!');
-        navigation.navigate('LoginScreen');
+        navigation.navigate('Login');
       }
     } catch (error: any) {
       Alert.alert('Erro', error?.message || 'Erro ao fazer Cadastro');
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#BFFFC5', 
   },
   formContainer: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#4CAF50',
     marginHorizontal: width * 0.05,
     padding: 20,
     borderRadius: 20,
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 50,
-    backgroundColor: '#BFFFC5',
+    backgroundColor: '#ffffff',
     borderRadius: 10,
     marginBottom: 12,
     paddingHorizontal: 10,
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     color: '#ffffff',
   },
   pickerWrapper: {
-    backgroundColor: '#BFFFC5',
+    backgroundColor: '#ffffff',
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#CCC',
@@ -157,33 +157,34 @@ const styles = StyleSheet.create({
     
   },
   registerButton: {
-    backgroundColor: '#4CAF50',
+    borderWidth: 1,
+    borderColor: '#000',
     paddingVertical: 15,
     borderRadius: 10,
     alignItems: 'center',
     marginTop: 10,
+    backgroundColor: '#006229',
   },
   registerButtonText: {
-    color: '#FFF',
+    color: '#000',
     fontWeight: 'bold',
-    fontSize: 16,
   },
   backToLoginButton: {
     marginTop: 20,
     alignItems: 'center',
   },
   backToLoginText: {
-    color: '#4CAF50',
+    color: '#ffffff',
     fontWeight: '600',
     textDecorationLine: 'underline',
   },
   logoContainer: {
     alignItems: 'center',
-    marginBottom: 40,
+    marginBottom: 60,
   },
   logo: {
-    width: width * 0.6,
-    height: height * 0.2,
+    width: width * 3.6,
+    height: height * 0.3,
   },
   pickerItem: {
     fontSize: 10,

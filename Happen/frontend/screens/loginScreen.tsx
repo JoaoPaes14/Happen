@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     height: height * 0.3,
   },
   formContainer: {
-    backgroundColor: '#A4FCA4',
+    backgroundColor: '#4CAF50',
     marginHorizontal: width * 0.05,
     padding: 20,
     borderRadius: 10,
@@ -131,14 +131,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     marginTop: 10,
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#006229',
   },
   registerButtonText: {
     color: '#000',
     fontWeight: 'bold',
   },
   forgotPasswordText: {
-    color: '#000',
+    color: '#ffffff',
     textAlign: 'center',
     marginTop: 15,
     textDecorationLine: 'underline',
