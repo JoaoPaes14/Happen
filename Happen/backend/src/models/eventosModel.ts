@@ -37,6 +37,7 @@ Evento.init(
     id_organizador: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      
     },
     criado_em: {
       type: DataTypes.DATE,
