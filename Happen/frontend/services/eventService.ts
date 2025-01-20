@@ -54,7 +54,8 @@ export const obterEvento = async (id: number) => {
 };
 
 
-export const listarEventos = async (nome?: string,data_inicial?: string,data_final?: string) => {
+
+export const listarEventos = async (nome?: string, data_inicial?: string, data_final?: string) => {
   try {
     const token = await getToken();
     if (!token) throw new Error('Token não encontrado');
@@ -64,6 +65,8 @@ export const listarEventos = async (nome?: string,data_inicial?: string,data_fin
     if (data_inicial) params.data_inicial = data_inicial;
     if (data_final) params.data_final = data_final;
 
+    console.log('Parâmetros da requisição:', params); 
+
     const response = await axios.get(`${API_URL}/listarEventos`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -71,13 +74,14 @@ export const listarEventos = async (nome?: string,data_inicial?: string,data_fin
       params,
     });
 
+    console.log('Resposta da API:', response.data); o
+
     return response.data.eventos;
   } catch (error: any) {
-    console.error("Erro ao listar eventos:", error); 
+    console.error('Erro ao listar eventos:', error);
     throw new Error(error.response?.data?.message || 'Erro ao listar eventos');
   }
 };
-
 
 export const excluirEvento = async (id: number) => {
   try {

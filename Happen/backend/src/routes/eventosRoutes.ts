@@ -11,6 +11,6 @@ router.get('/obterEvento/:id', authMiddleware, obterEvento);
 
 router.delete('/excluirEvento/:id', authMiddleware, excluirEvento);
 
-router.get('/listarEventos', authMiddleware, listarEventos);
+router.get('/listarEventos', listarEventos);
 
 export default router;
