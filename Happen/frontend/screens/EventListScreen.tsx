@@ -19,10 +19,8 @@ const EventListScreen = ({ navigation }: { navigation: any }) => {
     const fetchEventos = async () => {
       try {
         const data = await listarEventos();
-        console.log('Eventos recebidos:', data); 
         setEventos(data);
       } catch (err: any) {
-        console.error('Erro ao buscar eventos:', err.message);
         setError(err.message);
       } finally {
         setLoading(false);
@@ -45,7 +43,12 @@ const EventListScreen = ({ navigation }: { navigation: any }) => {
       />
       <View style={styles.cardContent}>
         <Text style={styles.eventName}>{item.nome}</Text>
-        <Text style={styles.eventDate}>{new Date(item.data_hora).toLocaleString()}</Text>
+        <Text style={styles.eventDate}>
+          {new Date(item.data_hora).toLocaleString('pt-BR', {
+            dateStyle: 'short',
+            timeStyle: 'short',
+          })}
+        </Text>
         <Text style={styles.eventLocation}>{item.local}</Text>
       </View>
     </TouchableOpacity>
@@ -54,8 +57,8 @@ const EventListScreen = ({ navigation }: { navigation: any }) => {
   if (loading) {
     return (
       <View style={styles.loaderContainer}>
-        <ActivityIndicator size="large" color="#6200ee" />
-        <Text>Carregando eventos...</Text>
+        <ActivityIndicator size="large" color="#4CAF50" />
+        <Text style={styles.loadingText}>Carregando eventos...</Text>
       </View>
     );
   }
@@ -70,6 +73,13 @@ const EventListScreen = ({ navigation }: { navigation: any }) => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.header}>
+        <Image
+          source={require('../assets/logo.png')}
+          style={styles.logo}
+        />
+        <Text style={styles.headerText}>Eventos Disponíveis</Text>
+      </View>
       <FlatList
         data={eventos}
         keyExtractor={(item) => item.id.toString()}
@@ -84,49 +94,75 @@ const EventListScreen = ({ navigation }: { navigation: any }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f4f4f8',
+    backgroundColor: '#BFFFC5',
+  },
+  header: {
+    backgroundColor: '#4CAF50',
+    paddingVertical: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+  },
+  logo: {
+    width: 40,
+    height: 40,
+    marginRight: 10,
+  },
+  headerText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#FFF',
   },
   listContainer: {
-    padding: 16,
+    padding: 12,
   },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: '#FFF',
     borderRadius: 8,
-    marginBottom: 16,
+    marginBottom: 12,
     overflow: 'hidden',
     elevation: 3,
     shadowColor: '#000',
     shadowOpacity: 0.1,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
+    width: '95%', // Largura ajustada para ocupar melhor o espaço
+    alignSelf: 'center',
+    maxWidth: 320, // Largura máxima reduzida
   },
   image: {
     width: '100%',
-    height: 150,
+    height: 100, // Altura reduzida para diminuir o tamanho do cartão
     resizeMode: 'cover',
   },
   cardContent: {
-    padding: 16,
+    padding: 12,
   },
   eventName: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#333',
   },
   eventDate: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#666',
-    marginTop: 8,
+    marginTop: 4,
   },
   eventLocation: {
-    fontSize: 14,
-    color: '#888',
+    fontSize: 12,
+    color: '#006229',
     marginTop: 4,
   },
   loaderContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
   },
   errorContainer: {
     flex: 1,
@@ -136,6 +172,8 @@ const styles = StyleSheet.create({
   errorText: {
     color: '#ff4d4d',
     fontSize: 16,
+    textAlign: 'center',
+    paddingHorizontal: 20,
   },
 });
 

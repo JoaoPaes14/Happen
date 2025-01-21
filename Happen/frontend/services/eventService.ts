@@ -1,7 +1,7 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const API_URL = 'http://localhost:3001/api/eventos';
+const API_URL = 'http://192.168.252.247:3001/api/eventos';
 
 
 const getToken = async (): Promise<string | null> => {
@@ -65,7 +65,7 @@ export const listarEventos = async (nome?: string, data_inicial?: string, data_f
     if (data_inicial) params.data_inicial = data_inicial;
     if (data_final) params.data_final = data_final;
 
-    console.log('Parâmetros da requisição:', params); 
+    console.log('Parâmetros da requisição:', params); // Depuração
 
     const response = await axios.get(`${API_URL}/listarEventos`, {
       headers: {
@@ -74,7 +74,7 @@ export const listarEventos = async (nome?: string, data_inicial?: string, data_f
       params,
     });
 
-    console.log('Resposta da API:', response.data); o
+    console.log('Resposta da API:', response.data); // Depuração
 
     return response.data.eventos;
   } catch (error: any) {
