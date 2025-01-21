@@ -10,6 +10,7 @@ class Evento extends Model {
   public id_organizador!: number;
   public criado_em!: Date;
   public atualizado_em!: Date;
+  public imagem!: string | null;
 }
 Evento.init(
   {
@@ -49,6 +50,10 @@ Evento.init(
       allowNull: false,
       defaultValue: DataTypes.NOW,
     },
+    imagem:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    }
   },
   {
     sequelize,
