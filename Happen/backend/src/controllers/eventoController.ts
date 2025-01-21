@@ -5,6 +5,7 @@ import { Op } from 'sequelize';
 
 export const criarEvento = async (req: Request, res: Response): Promise<void> => {
     const { nome, descricao, local, data_hora, id_organizador } = req.body;
+    const imagem = req.file ? req.file.filename : null;
 
     try {
         if (!nome || !descricao || !local || !data_hora || !id_organizador) {
@@ -16,7 +17,8 @@ export const criarEvento = async (req: Request, res: Response): Promise<void> =>
             descricao,
             local,
             data_hora,
-            id_organizador
+            id_organizador,
+            imagem
         });
         res.status(201).json({ message: 'Evento criado com sucesso', evento: novoEvento });
     } catch (error: any) {
