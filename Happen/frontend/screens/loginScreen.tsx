@@ -26,7 +26,7 @@ const LoginScreen = ({ navigation }: any) => {
       const response = await login(email, senha);
       if (response.token) {
         Alert.alert('Sucesso', 'Login realizado com sucesso');
-        navigation.navigate('CreateEventScreen');
+        navigation.navigate('EventListScreen');
       }
     } catch (error: any) {
       Alert.alert('Erro', error?.message || 'Erro ao fazer login');
@@ -126,19 +126,19 @@ const styles = StyleSheet.create({
   },
   registerButton: {
     borderWidth: 1,
-    borderColor: '#000',
+    borderColor: '#006229',
     paddingVertical: 15,
     borderRadius: 10,
     alignItems: 'center',
     marginTop: 10,
-    backgroundColor: '#006229',
+    backgroundColor: '#BFFFC5',
   },
   registerButtonText: {
     color: '#000',
     fontWeight: 'bold',
   },
   forgotPasswordText: {
-    color: '#ffffff',
+    color: '#000',
     textAlign: 'center',
     marginTop: 15,
     textDecorationLine: 'underline',

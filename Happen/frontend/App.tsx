@@ -13,7 +13,7 @@ const Stack = createStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="EventListScreen">
+      <Stack.Navigator initialRouteName="CreateEventScreen">
         <Stack.Screen 
           name="Login" 
           component={LoginScreen} 

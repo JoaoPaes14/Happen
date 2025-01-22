@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
     marginBottom: 5,
-    color: '#ffffff',
+    color: '#000',
   },
   pickerWrapper: {
     backgroundColor: '#ffffff',
@@ -158,12 +158,12 @@ const styles = StyleSheet.create({
   },
   registerButton: {
     borderWidth: 1,
-    borderColor: '#000',
+    borderColor: '#006229',
     paddingVertical: 15,
     borderRadius: 10,
     alignItems: 'center',
     marginTop: 10,
-    backgroundColor: '#006229',
+    backgroundColor: '#BFFFC5',
   },
   registerButtonText: {
     color: '#000',
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   backToLoginText: {
-    color: '#ffffff',
+    color: '#000',
     fontWeight: '600',
     textDecorationLine: 'underline',
   },
