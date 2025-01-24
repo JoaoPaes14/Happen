@@ -1,5 +1,5 @@
 import { Request,Response } from "express";
-import Participacao from "../models/participacoesModelo";
+import Participacao from "../models/participacoesModel";
 
 export const criarParticipacao = async (req:Request, res:Response):Promise<void> =>{
     const{id_evento,id_usuario}= req.body;

@@ -1,25 +1,29 @@
-import multer from "multer";
-import path from "path";
+import multer from 'multer';
+import path from 'path';
 
 
 const storage = multer.diskStorage({
-    destination:(req, file ,cb)=>{
-        cb(null, "uploads/");
+    destination: (req, file, cb) => {
+        const uploadPath = path.join(__dirname, '../uploads');
+        cb(null, uploadPath); 
     },
-    filename:(req,file,cb)=>{
-        cb(null, `${Date.now()}-${file.originalname}`);
-
-    },
-
+    filename: (req, file, cb) => {
+        const fileName = Date.now() + '-' + file.originalname; 
+        cb(null, fileName);
+    }
 });
 
-const fileFilter = (req: any, file: any, cb: any) => {
-    const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
-    if (allowedTypes.includes(file.mimetype)) {
-      cb(null, true);
-    } else {
-      cb(new Error("Tipo de arquivo inválido. Apenas JPG, PNG são permitidos."), false);
+
+const upload = multer({
+    storage,
+    limits: { fileSize: 5 * 1024 * 1024 },  
+    fileFilter: (req, file, cb) => {
+        const ext = path.extname(file.originalname);
+        if (ext !== '.jpg' && ext !== '.jpeg' && ext !== '.png') {
+            return cb(new Error('Somente arquivos de imagem são permitidos.'));
+        }
+        cb(null, true);
     }
-  };
-  
-  export const upload = multer({ storage, fileFilter });
+});
+
+export { upload };

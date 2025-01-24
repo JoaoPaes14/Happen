@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet,
-  TouchableOpacity,
-  ActivityIndicator,
-  Image,
-} from 'react-native';
+import {View,Text,FlatList,StyleSheet,TouchableOpacity,ActivityIndicator,Image,ScrollView,} from 'react-native';
 import { listarEventos } from '../services/eventService';
 
 const EventListScreen = ({ navigation }: { navigation: any }) => {
@@ -50,6 +42,11 @@ const EventListScreen = ({ navigation }: { navigation: any }) => {
           })}
         </Text>
         <Text style={styles.eventLocation}>{item.local}</Text>
+        <Text style={styles.eventDescription}>{item.descricao}</Text>
+        <Text style={styles.eventOrganizer}>Organizador: {item.organizador}</Text>
+        <Text style={styles.eventCapacity}>
+          Capacidade: {item.capacidade || 'Não informado'}
+        </Text>
       </View>
     </TouchableOpacity>
   );
@@ -74,10 +71,7 @@ const EventListScreen = ({ navigation }: { navigation: any }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Image
-          source={require('../assets/logo.png')}
-          style={styles.logo}
-        />
+        <Image source={require('../assets/logo.png')} style={styles.logo} />
         <Text style={styles.headerText}>Eventos Disponíveis</Text>
       </View>
       <FlatList
@@ -126,20 +120,20 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     shadowOffset: { width: 0, height: 2 },
-    width: '95%', // Largura ajustada para ocupar melhor o espaço
+    width: '95%',
     alignSelf: 'center',
-    maxWidth: 320, // Largura máxima reduzida
+    maxWidth: 320,
   },
   image: {
     width: '100%',
-    height: 100, // Altura reduzida para diminuir o tamanho do cartão
+    height: 150,
     resizeMode: 'cover',
   },
   cardContent: {
     padding: 12,
   },
   eventName: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#333',
   },
@@ -151,6 +145,22 @@ const styles = StyleSheet.create({
   eventLocation: {
     fontSize: 12,
     color: '#006229',
+    marginTop: 4,
+  },
+  eventDescription: {
+    fontSize: 12,
+    color: '#444',
+    marginTop: 4,
+  },
+  eventOrganizer: {
+    fontSize: 12,
+    color: '#444',
+    marginTop: 4,
+    fontStyle: 'italic',
+  },
+  eventCapacity: {
+    fontSize: 12,
+    color: '#444',
     marginTop: 4,
   },
   loaderContainer: {

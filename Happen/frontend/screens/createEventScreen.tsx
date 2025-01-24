@@ -1,8 +1,9 @@
-import {  Dimensions,  Alert, KeyboardAvoidingView, Platform, TouchableOpacity, TextInput, View, StyleSheet, Text, Image } from "react-native";
-import React, { useState } from "react";
-import { criarEvento } from "../services/eventService";
+import React, { useState } from 'react';
+import { Dimensions, Alert, KeyboardAvoidingView, Platform, TouchableOpacity, TextInput, View, StyleSheet, Text, Image } from 'react-native';
+import { criarEvento } from '../services/eventService'; 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as ImagePicker from 'expo-image-picker';
+import { launchImageLibrary } from 'react-native-image-picker';
+
 
 const { width, height } = Dimensions.get('window');
 
@@ -11,8 +12,27 @@ const CreateEventScreen = ({ navigation }: any) => {
   const [descricao, setDescricao] = useState('');
   const [local, setLocal] = useState('');
   const [dataHora, setDataHora] = useState('');
-  const [imagem, setImagem] = useState<any>(null);
+  const [imagem, setImagem] = useState<string | undefined>();
   const [loading, setLoading] = useState(false);
+
+  const handleImagePicker = () => {
+    launchImageLibrary(
+      {
+        mediaType: 'photo',
+        includeBase64: false, 
+        quality: 1,
+      },
+      (response) => {
+        if (response.didCancel) {
+          Alert.alert('Erro', 'Você não selecionou nenhuma imagem.');
+        } else if (response.errorCode) {
+          Alert.alert('Erro', response.errorMessage || 'Erro ao selecionar a imagem.');
+        } else {
+          setImagem(response.assets?.[0]?.uri); 
+        }
+      }
+    );
+  };
 
   const handleCreateEvent = async () => {
     if (!nome || !descricao || !local || !dataHora) {
@@ -33,6 +53,7 @@ const CreateEventScreen = ({ navigation }: any) => {
       const idOrganizador = decodedToken.id;
 
       const response = await criarEvento(nome, descricao, local, dataHora, idOrganizador, imagem);
+
       if (response) {
         Alert.alert('Sucesso', 'Evento criado com sucesso!');
         navigation.navigate('EventListScreen');
@@ -44,31 +65,19 @@ const CreateEventScreen = ({ navigation }: any) => {
     }
   };
 
-  const pickImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setImagem(result.assets[0]); 
-    }
-  };
-
   return (
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <View style={styles.logoContainer}>
-              <Image
-                source={require('../assets/logo.png')}
-                style={styles.logo}
-                resizeMode="contain"
-              />
-            </View>
+        <Image
+          source={require('../assets/logo.png')}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+      </View>
+
       <View style={styles.formContainer}>
         <TextInput
           style={styles.input}
@@ -95,14 +104,13 @@ const CreateEventScreen = ({ navigation }: any) => {
           onChangeText={setDataHora}
         />
 
-        <TouchableOpacity style={styles.imageButton} onPress={pickImage}>
-          <Text style={styles.imageButtonText}>
-            {imagem ? 'Alterar Imagem' : 'SELECIONAR IMAGEM'}
-          </Text>
+        <TouchableOpacity onPress={handleImagePicker}>
+          <Text style={styles.imageButtonText}>SELECIONAR IMAGEM</Text>
         </TouchableOpacity>
 
+        {/* Exibe a imagem selecionada */}
         {imagem && (
-          <Image source={{ uri: imagem.uri }} style={styles.imagePreview} />
+          <Image source={{ uri: imagem }} style={styles.selectedImage} />
         )}
 
         <TouchableOpacity
@@ -120,57 +128,8 @@ const CreateEventScreen = ({ navigation }: any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#BFFFC5',
     justifyContent: 'center',
-    backgroundColor: '#BFFFC5', 
-  },
-  formContainer: {
-    backgroundColor: '#4CAF50',
-    marginHorizontal: width * 0.05,
-    padding: 20,
-    borderRadius: 20,
-    elevation: 4,
-  },
-  input: {
-    height: 50,
-    backgroundColor: '#ffffff',
-    borderRadius: 10,
-    marginBottom: 12,
-    paddingHorizontal: 10,
-    borderWidth: 1,
-    borderColor: '#CCC',
-  },
-  imageButton: {
-    borderWidth: 1,
-    borderColor: '#006229',
-    paddingVertical: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginTop: 10,
-    backgroundColor: '#BFFFC5',
-  },
-  imageButtonText: {
-    color: '#000',
-    fontWeight: 'bold',
-  },
-  imagePreview: {
-    width: '100%',
-    height: 200,
-    borderRadius: 10,
-    marginTop: 10,
-    marginBottom: 10,
-  },
-  createButton: {
-    borderWidth: 1,
-    borderColor: '#006229',
-    paddingVertical: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginTop: 10,
-    backgroundColor: '#BFFFC5',
-  },
-  createButtonText: {
-    color: '#000',
-    fontWeight: 'bold',
   },
   logoContainer: {
     alignItems: 'center',
@@ -179,7 +138,44 @@ const styles = StyleSheet.create({
   logo: {
     width: width * 3.6,
     height: height * 0.3,
-  }
+  },
+  formContainer: {
+    backgroundColor: '#4CAF50',
+    marginHorizontal: width * 0.05,
+    padding: 20,
+    borderRadius: 10,
+  },
+  input: {
+    height: 50,
+    backgroundColor: '#FFF',
+    borderRadius: 10,
+    marginBottom: 12,
+    paddingHorizontal: 10,
+  },
+  createButton: {
+    backgroundColor: '#BFFFC5',
+    paddingVertical: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 10,
+    borderColor: '#006229',
+  },
+  createButtonText: {
+    color: '#000',
+    fontWeight: 'bold',
+  },
+  imageButtonText: {
+    color: '#000',
+    textAlign: 'center',
+    marginVertical: 10,
+    fontWeight: 'bold',
+  },
+  selectedImage: {
+    width: 200,
+    height: 200,
+    borderRadius: 10,
+    marginTop: 10,
+  },
 });
 
 export default CreateEventScreen;
