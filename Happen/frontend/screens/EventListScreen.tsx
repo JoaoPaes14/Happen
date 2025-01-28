@@ -1,86 +1,138 @@
-import React, { useEffect, useState } from 'react';
-import {View,Text,FlatList,StyleSheet,TouchableOpacity,ActivityIndicator,Image,ScrollView,} from 'react-native';
-import { listarEventos } from '../services/eventService';
+import React, { useEffect, useState } from "react";
+import { View, Text, Image, StyleSheet, FlatList, Dimensions, TouchableOpacity, RefreshControl, ActivityIndicator } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { listarEventos } from "../services/eventService";
+import { Calendar, MapPin, Clock, Users, Plus } from "lucide-react-native";
+import { LinearGradient } from 'expo-linear-gradient';
 
-const EventListScreen = ({ navigation }: { navigation: any }) => {
+const { width } = Dimensions.get("window");
+
+const EventListScreen = ({ navigation }: any) => {
   const [eventos, setEventos] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const fetchEventos = async () => {
+    try {
+      const eventosData = await listarEventos();
+      setEventos(eventosData);
+    } catch (error) {
+      console.error("Erro ao buscar eventos:", error);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchEventos = async () => {
-      try {
-        const data = await listarEventos();
-        setEventos(data);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchEventos();
   }, []);
 
-  const renderEventItem = ({ item }: { item: any }) => (
-    <TouchableOpacity
-      style={styles.card}
-      onPress={() => navigation.navigate('EventDetailScreen', { id: item.id })}
-    >
-      <Image
-        source={{
-          uri: item.image || 'https://via.placeholder.com/150',
-        }}
-        style={styles.image}
-      />
-      <View style={styles.cardContent}>
-        <Text style={styles.eventName}>{item.nome}</Text>
-        <Text style={styles.eventDate}>
-          {new Date(item.data_hora).toLocaleString('pt-BR', {
-            dateStyle: 'short',
-            timeStyle: 'short',
-          })}
-        </Text>
-        <Text style={styles.eventLocation}>{item.local}</Text>
-        <Text style={styles.eventDescription}>{item.descricao}</Text>
-        <Text style={styles.eventOrganizer}>Organizador: {item.organizador}</Text>
-        <Text style={styles.eventCapacity}>
-          Capacidade: {item.capacidade || 'Não informado'}
-        </Text>
-      </View>
-    </TouchableOpacity>
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    fetchEventos();
+  }, []);
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const day = date.getDate(); // Pega o dia do mês
+    const month = date.toLocaleString('pt-BR', { month: 'long' }); // Pega o mês em formato longo
+    return { day, month };
+  };
+
+  const formatTime = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('pt-BR', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  const renderItem = ({ item }: { item: any }) => {
+    const { day, month } = formatDate(item.data_hora); // Usando a função formatDate
+    return (
+      <TouchableOpacity style={styles.card} onPress={() => {}}>
+        <LinearGradient colors={['#006229', '#004D20']} style={styles.dateContainer}>
+          <Text style={styles.dateDay}>{day}</Text>
+          <Text style={styles.dateMonth}>{month.toUpperCase()}</Text> {/* Garantindo que o mês esteja em maiúsculas */}
+        </LinearGradient>
+        <View style={styles.contentContainer}>
+          {item.imagemUrl ? (
+            <Image source={{ uri: item.imagemUrl }} style={styles.image} />
+          ) : (
+            <View style={[styles.image, styles.imagePlaceholder]}>
+              <Calendar size={24} color="#006229" />
+            </View>
+          )}
+          <View style={styles.infoContainer}>
+            <Text style={styles.title} numberOfLines={1}>{item.nome}</Text>
+            <Text style={styles.description} numberOfLines={2}>{item.descricao}</Text>
+            <View style={styles.detailRow}>
+              <View style={styles.detailItem}>
+                <Clock size={14} color="#006229" />
+                <Text style={styles.detailText}>{formatTime(item.data_hora)}</Text>
+              </View>
+              <View style={styles.detailItem}>
+                <MapPin size={14} color="#006229" />
+                <Text style={styles.detailText} numberOfLines={1}>{item.local}</Text>
+              </View>
+              {item.participantes && (
+                <View style={styles.detailItem}>
+                  <Users size={14} color="#006229" />
+                  <Text style={styles.detailText}>{item.participantes} participantes</Text>
+                </View>
+              )}
+            </View>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  const ListEmptyComponent = () => (
+    <View style={styles.emptyContainer}>
+      <Calendar size={48} color="#006229" />
+      <Text style={styles.emptyText}>Nenhum evento encontrado</Text>
+    </View>
   );
 
   if (loading) {
     return (
-      <View style={styles.loaderContainer}>
-        <ActivityIndicator size="large" color="#4CAF50" />
-        <Text style={styles.loadingText}>Carregando eventos...</Text>
-      </View>
-    );
-  }
-
-  if (error) {
-    return (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>Erro ao carregar eventos: {error}</Text>
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#006229" />
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Image source={require('../assets/logo.png')} style={styles.logo} />
-        <Text style={styles.headerText}>Eventos Disponíveis</Text>
-      </View>
+      <Text style={styles.headerText}>Eventos Disponíveis</Text>
       <FlatList
         data={eventos}
+        renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={renderEventItem}
-        contentContainerStyle={styles.listContainer}
+        contentContainerStyle={styles.list}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={["#006229"]}
+          />
+        }
+        ListEmptyComponent={ListEmptyComponent}
       />
+      <TouchableOpacity
+        style={styles.fabButton}
+        onPress={() => navigation.navigate('CreateEventScreen')}
+      >
+        <LinearGradient
+          colors={['#006229', '#004D20']}
+          style={styles.fabGradient}
+        >
+          <Plus size={24} color="#FFFFFF" />
+        </LinearGradient>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -88,103 +140,138 @@ const EventListScreen = ({ navigation }: { navigation: any }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#BFFFC5',
-  },
-  header: {
-    backgroundColor: '#4CAF50',
-    paddingVertical: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
-  logo: {
-    width: 40,
-    height: 40,
-    marginRight: 10,
+    backgroundColor: "#BFFFC5", // Mantendo o verde original
+    paddingHorizontal: 20,
+    paddingTop: 40,
   },
   headerText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#FFF',
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#006229", // Mantendo o verde original
+    textAlign: "center",
+    marginBottom: 20,
+    textTransform: "uppercase", // Maiúsculas para dar mais destaque
+    letterSpacing: 2, // Para dar mais espaço entre as letras
   },
-  listContainer: {
-    padding: 12,
+  list: {
+    paddingBottom: 20,
   },
   card: {
-    backgroundColor: '#FFF',
-    borderRadius: 8,
-    marginBottom: 12,
-    overflow: 'hidden',
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    marginBottom: 20,
+    flexDirection: "row",
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
     shadowOffset: { width: 0, height: 2 },
-    width: '95%',
-    alignSelf: 'center',
-    maxWidth: 320,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  dateContainer: {
+    width: 100,
+    height: 100,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: '#006229', // Mantendo o verde original
+    borderTopLeftRadius: 16,
+    borderBottomLeftRadius: 16,
+    marginRight: 12,
+    padding: 10,
+  },
+  dateDay: {
+    fontSize: 34,
+    fontWeight: "bold",
+    color: "#FFFFFF",
+  },
+  dateMonth: {
+    fontSize: 16,
+    color: "#A7D7A3",
+    textTransform: "uppercase",
+    fontWeight: "bold",
+  },
+  contentContainer: {
+    flex: 1,
+    flexDirection: "row",
+    padding: 16,
   },
   image: {
-    width: '100%',
-    height: 150,
-    resizeMode: 'cover',
+    width: 90,
+    height: 90,
+    borderRadius: 12,
+    marginRight: 16,
   },
-  cardContent: {
-    padding: 12,
+  imagePlaceholder: {
+    backgroundColor: "#E0F2E3",
+    justifyContent: "center",
+    alignItems: "center",
   },
-  eventName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  eventDate: {
-    fontSize: 12,
-    color: '#666',
-    marginTop: 4,
-  },
-  eventLocation: {
-    fontSize: 12,
-    color: '#006229',
-    marginTop: 4,
-  },
-  eventDescription: {
-    fontSize: 12,
-    color: '#444',
-    marginTop: 4,
-  },
-  eventOrganizer: {
-    fontSize: 12,
-    color: '#444',
-    marginTop: 4,
-    fontStyle: 'italic',
-  },
-  eventCapacity: {
-    fontSize: 12,
-    color: '#444',
-    marginTop: 4,
-  },
-  loaderContainer: {
+  infoContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
-  loadingText: {
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#006229", // Mantendo o verde original
+    marginBottom: 4,
+  },
+  description: {
+    fontSize: 16,
+    color: "#4A8360",
+    marginBottom: 8,
+  },
+  detailRow: {
+    flexDirection: "row",
+    gap: 12,
     marginTop: 10,
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
   },
-  errorContainer: {
+  detailItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  detailText: {
+    fontSize: 14,
+    color: "#006229", // Mantendo o verde original
+  },
+  loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  emptyContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 50,
+  },
+  emptyText: {
+    fontSize: 18,
+    color: "#4A8360",
+    marginTop: 10,
+  },
+  fabButton: {
+    position: 'absolute',
+    bottom: 24,
+    right: 24,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    transform: [{ scale: 1.1 }], // Efeito de "zoom" sutil
+    justifyContent: 'center', // Centralizando o ícone
     alignItems: 'center',
   },
-  errorText: {
-    color: '#ff4d4d',
-    fontSize: 16,
-    textAlign: 'center',
-    paddingHorizontal: 20,
+  fabGradient: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
+  
 });
 
 export default EventListScreen;

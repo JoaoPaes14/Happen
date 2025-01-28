@@ -1,12 +1,13 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { launchImageLibrary, ImagePickerResponse } from 'react-native-image-picker'; /
+import { launchImageLibrary, ImagePickerResponse } from 'react-native-image-picker';
 
-const API_URL = 'http://localhost:3001/api/eventos';
+const API_URL = 'http://localhost:3001/api/eventos'; 
 
 const getToken = async (): Promise<string | null> => {
   return await AsyncStorage.getItem('token');
 };
+
 
 export const handleImagePicker = async (): Promise<string | undefined> => {
   try {
@@ -18,25 +19,19 @@ export const handleImagePicker = async (): Promise<string | undefined> => {
     if (result.assets && result.assets.length > 0) {
       const imageUri = result.assets[0].uri;
       console.log('Imagem selecionada:', imageUri);
-      return imageUri; 
+      return imageUri;
     } else {
       console.log('Nenhuma imagem selecionada');
-      return undefined; 
+      return undefined;
     }
   } catch (error) {
     console.error('Erro ao selecionar imagem:', error);
-    return undefined; 
+    return undefined;
   }
 };
 
-export const criarEvento = async (
-  nome: string,
-  descricao: string,
-  local: string,
-  data_hora: string,
-  id_organizador: number,
-  imagemUri?: string
-) => {
+
+export const criarEvento = async ( nome: string,descricao: string,local: string,data_hora: string,id_organizador: number,imagemUri?: string) => {
   try {
     const token = await getToken();
     if (!token) throw new Error('Token não encontrado');
@@ -48,15 +43,13 @@ export const criarEvento = async (
     formData.append('data_hora', data_hora);
     formData.append('id_organizador', id_organizador.toString());
 
-   
     if (imagemUri) {
       const image = await fetch(imagemUri)
         .then((res) => res.blob())
         .then((blob) => {
-     
           return new File([blob], 'imagem.jpg', { type: 'image/jpeg' });
         })
-        .catch((error) => {
+        .catch(() => {
           throw new Error('Erro ao converter a imagem para Blob');
         });
 
@@ -77,11 +70,12 @@ export const criarEvento = async (
   }
 };
 
+// Obter Evento por ID
 export const obterEvento = async (id: number) => {
   try {
     const token = await getToken();
     if (!token) throw new Error('Token não encontrado');
-    
+
     const response = await axios.get(`${API_URL}/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -95,35 +89,23 @@ export const obterEvento = async (id: number) => {
   }
 };
 
-export const listarEventos = async (nome?: string, data_inicial?: string, data_final?: string) => {
+// Listar Eventos
+export const listarEventos = async () => {
   try {
-    const token = await getToken();
-    if (!token) throw new Error('Token não encontrado');
-
-    const params: Record<string, string> = {};
-    if (nome) params.nome = nome;
-    if (data_inicial) params.data_inicial = data_inicial;
-    if (data_final) params.data_final = data_final;
-
-    const response = await axios.get(`${API_URL}/listarEventos`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      params,
-    });
-
+    const response = await axios.get(`${API_URL}/listarEventos`);
     return response.data.eventos;
-  } catch (error: any) {
-    console.error('Erro ao listar eventos:', error);
-    throw new Error(error.response?.data?.message || 'Erro ao listar eventos');
+  } catch (error) {
+    console.error("Erro ao listar eventos:", error);
+    throw new Error("Erro ao listar eventos");
   }
 };
 
+// Excluir Evento
 export const excluirEvento = async (id: number) => {
   try {
     const token = await getToken();
     if (!token) throw new Error('Token não encontrado');
-    
+
     const response = await axios.delete(`${API_URL}/excluirEvento/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,

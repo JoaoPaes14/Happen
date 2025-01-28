@@ -20,7 +20,7 @@ if (!fs.existsSync(uploadPath)) {
 
 app.use(express.json());
 app.use(corsConfig);
-app.use('/uploads', express.static(uploadPath));  // Serve as imagens
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.get('/', (req, res) => {
   res.send('API está funcionando!');
