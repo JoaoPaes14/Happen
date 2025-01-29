@@ -71,35 +71,37 @@ export const criarEvento = async ( nome: string,descricao: string,local: string,
 };
 
 // Obter Evento por ID
-export const obterEvento = async (id: number) => {
+export const obterEvento = async (id: number, token: string) => {
   try {
-    const token = await getToken();
-    if (!token) throw new Error('Token não encontrado');
+    console.log("ID enviado para a API:", id); 
 
-    const response = await axios.get(`${API_URL}/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    const response = await axios.get(`${API_URL}/obterEvento/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
     });
 
     return response.data;
   } catch (error: any) {
-    console.error('Erro ao obter evento:', error);
-    throw new Error(error.response?.data?.message || 'Erro ao obter evento');
+    console.error("Erro ao obter evento:", error);
+    throw error;
   }
 };
-
 // Listar Eventos
 export const listarEventos = async () => {
   try {
-    const response = await axios.get(`${API_URL}/listarEventos`);
+    const token = await getToken();
+    if (!token) throw new Error('Token não encontrado');
+
+    const response = await axios.get(`${API_URL}/listarEventos`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data.eventos;
   } catch (error) {
     console.error("Erro ao listar eventos:", error);
     throw new Error("Erro ao listar eventos");
   }
 };
-
 // Excluir Evento
 export const excluirEvento = async (id: number) => {
   try {

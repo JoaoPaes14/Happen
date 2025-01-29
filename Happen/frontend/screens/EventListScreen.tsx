@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Image, StyleSheet, FlatList, Dimensions, TouchableOpacity, RefreshControl, ActivityIndicator } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import { listarEventos } from "../services/eventService";
 import { Calendar, MapPin, Clock, Users, Plus } from "lucide-react-native";
 import { LinearGradient } from 'expo-linear-gradient';
@@ -35,8 +34,8 @@ const EventListScreen = ({ navigation }: any) => {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    const day = date.getDate(); // Pega o dia do mês
-    const month = date.toLocaleString('pt-BR', { month: 'long' }); // Pega o mês em formato longo
+    const day = date.getDate();
+    const month = date.toLocaleString('pt-BR', { month: 'long' });
     return { day, month };
   };
 
@@ -49,12 +48,15 @@ const EventListScreen = ({ navigation }: any) => {
   };
 
   const renderItem = ({ item }: { item: any }) => {
-    const { day, month } = formatDate(item.data_hora); // Usando a função formatDate
+    const { day, month } = formatDate(item.data_hora);
     return (
-      <TouchableOpacity style={styles.card} onPress={() => {}}>
+      <TouchableOpacity 
+        style={styles.card} 
+        onPress={() => navigation.navigate('EventDetailScreen', { eventId: item.id })}
+      >
         <LinearGradient colors={['#006229', '#004D20']} style={styles.dateContainer}>
           <Text style={styles.dateDay}>{day}</Text>
-          <Text style={styles.dateMonth}>{month.toUpperCase()}</Text> {/* Garantindo que o mês esteja em maiúsculas */}
+          <Text style={styles.dateMonth}>{month.toUpperCase()}</Text>
         </LinearGradient>
         <View style={styles.contentContainer}>
           {item.imagemUrl ? (
@@ -140,18 +142,18 @@ const EventListScreen = ({ navigation }: any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#BFFFC5", // Mantendo o verde original
+    backgroundColor: "#BFFFC5",
     paddingHorizontal: 20,
     paddingTop: 40,
   },
   headerText: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#006229", // Mantendo o verde original
+    color: "#000000",
     textAlign: "center",
     marginBottom: 20,
-    textTransform: "uppercase", // Maiúsculas para dar mais destaque
-    letterSpacing: 2, // Para dar mais espaço entre as letras
+    textTransform: "uppercase",
+    letterSpacing: 2,
   },
   list: {
     paddingBottom: 20,
@@ -172,7 +174,7 @@ const styles = StyleSheet.create({
     height: 100,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: '#006229', // Mantendo o verde original
+    backgroundColor: '#006229',
     borderTopLeftRadius: 16,
     borderBottomLeftRadius: 16,
     marginRight: 12,
@@ -188,6 +190,12 @@ const styles = StyleSheet.create({
     color: "#A7D7A3",
     textTransform: "uppercase",
     fontWeight: "bold",
+    borderWidth: 3,
+    borderColor: "#006229",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+    marginTop: 4,
   },
   contentContainer: {
     flex: 1,
@@ -211,12 +219,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#006229", // Mantendo o verde original
+    color: "#000000",
     marginBottom: 4,
   },
   description: {
     fontSize: 16,
-    color: "#4A8360",
+    color: "#000000",
     marginBottom: 8,
   },
   detailRow: {
@@ -231,7 +239,7 @@ const styles = StyleSheet.create({
   },
   detailText: {
     fontSize: 14,
-    color: "#006229", // Mantendo o verde original
+    color: "#000000",
   },
   loadingContainer: {
     flex: 1,
@@ -245,7 +253,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 18,
-    color: "#4A8360",
+    color: "#000000",
     marginTop: 10,
   },
   fabButton: {
@@ -260,8 +268,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 8,
-    transform: [{ scale: 1.1 }], // Efeito de "zoom" sutil
-    justifyContent: 'center', // Centralizando o ícone
+    transform: [{ scale: 1.1 }],
+    justifyContent: 'center',
     alignItems: 'center',
   },
   fabGradient: {
@@ -271,7 +279,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  
 });
 
 export default EventListScreen;

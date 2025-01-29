@@ -6,6 +6,7 @@ import EventListScreen from './screens/EventListScreen';
 import LoadingScreen from './screens/loadingScreen';
 import RegisterScreen from './screens/registerScreen';
 import CreateEventScreen from './screens/createEventScreen';
+import EventDetailScreen from './screens/eventDetailScreen';
 
 
 const Stack = createStackNavigator();
@@ -13,7 +14,7 @@ const Stack = createStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="EventListScreen">
+      <Stack.Navigator initialRouteName="Login">
         <Stack.Screen 
           name="Login" 
           component={LoginScreen} 
@@ -37,6 +38,11 @@ export default function App() {
         <Stack.Screen 
           name="CreateEventScreen" 
           component={CreateEventScreen} 
+          options={{ headerShown: false }} 
+        />
+        <Stack.Screen 
+          name="EventDetailScreen" 
+          component={EventDetailScreen} 
           options={{ headerShown: false }} 
         />
       </Stack.Navigator>

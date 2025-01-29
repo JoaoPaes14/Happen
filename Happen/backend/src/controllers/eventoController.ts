@@ -63,11 +63,13 @@ export const listarEventos = async (req: Request, res: Response): Promise<void> 
 // Obter Evento por ID
 export const obterEvento = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
+  console.log("ID recebido no backend:", id); 
 
   try {
     const evento = await Evento.findByPk(id);
 
     if (!evento) {
+      console.log("Evento não encontrado para o ID:", id); 
       res.status(404).json({ message: "Evento não encontrado" });
       return;
     }
@@ -79,9 +81,11 @@ export const obterEvento = async (req: Request, res: Response): Promise<void> =>
 
     res.status(200).json(eventoComImagem);
   } catch (error: any) {
+    console.error("Erro ao obter evento:", error);
     res.status(500).json({ message: "Erro ao obter evento", error: error.message });
   }
 };
+
 
 // Excluir Evento
 export const excluirEvento = async (req: Request, res: Response): Promise<void> => {
@@ -110,45 +114,3 @@ export const excluirEvento = async (req: Request, res: Response): Promise<void> 
   }
 };
 
-// Atualizar Evento
-export const atualizarEvento = async (req: Request, res: Response): Promise<void> => {
-  const { id } = req.params;
-  const { nome, descricao, local, data_hora, id_organizador } = req.body;
-  const novaImagem = req.file ? req.file.filename : null;
-
-  try {
-    const evento = await Evento.findByPk(id);
-
-    if (!evento) {
-      res.status(404).json({ message: "Evento não encontrado" });
-      return;
-    }
-
-    
-    if (novaImagem && evento.imagem) {
-      const imagemPath = path.join(__dirname, "../../uploads", evento.imagem);
-      if (fs.existsSync(imagemPath)) {
-        fs.unlinkSync(imagemPath);
-      }
-    }
-
-    
-    await evento.update({
-      nome: nome || evento.nome,
-      descricao: descricao || evento.descricao,
-      local: local || evento.local,
-      data_hora: data_hora || evento.data_hora,
-      id_organizador: id_organizador || evento.id_organizador,
-      imagem: novaImagem || evento.imagem,
-    });
-
-    const eventoAtualizado = {
-      ...evento.toJSON(),
-      imagemUrl: evento.imagem ? `${BASE_URL}${evento.imagem}` : null,
-    };
-
-    res.status(200).json({ message: "Evento atualizado com sucesso", evento: eventoAtualizado });
-  } catch (error: any) {
-    res.status(500).json({ message: "Erro ao atualizar evento", error: error.message });
-  }
-};

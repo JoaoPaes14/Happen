@@ -26,7 +26,7 @@ const LoginScreen = ({ navigation }: any) => {
       const response = await login(email, senha);
       if (response.token) {
         Alert.alert('Sucesso', 'Login realizado com sucesso');
-        navigation.navigate('CreateEventScreen');
+        navigation.navigate('EventListScreen');
       }
     } catch (error: any) {
       Alert.alert('Erro', error?.message || 'Erro ao fazer login');
