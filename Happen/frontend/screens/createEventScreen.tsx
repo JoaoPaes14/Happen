@@ -3,7 +3,7 @@ import { Dimensions, Alert, KeyboardAvoidingView, Platform, TouchableOpacity, Te
 import { criarEvento } from '../services/eventService'; 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { launchImageLibrary } from 'react-native-image-picker';
-
+import { ArrowLeft } from "lucide-react-native";
 
 const { width, height } = Dimensions.get('window');
 
@@ -78,6 +78,13 @@ const CreateEventScreen = ({ navigation }: any) => {
         />
       </View>
 
+      <TouchableOpacity 
+        style={styles.backButton}
+        onPress={() => navigation.goBack()}
+      >
+        <ArrowLeft size={24} color="#006229" />
+      </TouchableOpacity>
+
       <View style={styles.formContainer}>
         <TextInput
           style={styles.input}
@@ -142,8 +149,9 @@ const styles = StyleSheet.create({
   formContainer: {
     backgroundColor: '#4CAF50',
     marginHorizontal: width * 0.05,
-    padding: 20,
-    borderRadius: 10,
+    padding: 20,  
+        
+    borderRadius: 10,        
   },
   input: {
     height: 50,
@@ -175,6 +183,20 @@ const styles = StyleSheet.create({
     height: 200,
     borderRadius: 10,
     marginTop: 10,
+  },
+  backButton: {
+    position: 'absolute',
+    top: 40,
+    left: 20,
+    zIndex: 1,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
 });
 

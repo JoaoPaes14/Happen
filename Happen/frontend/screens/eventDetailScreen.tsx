@@ -186,6 +186,9 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 30,
     marginTop: -30,
     padding: 20,
+    borderWidth: 5,           
+    borderColor: '#BFFFC5',     
+    borderRadius: 10, 
   },
   dateCard: {
     backgroundColor: '#006229',
